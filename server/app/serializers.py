@@ -4,7 +4,7 @@ from django.db import models
 
 from rest_framework import serializers
 from .models import Attendance, LeaveBalance, RecentActivity
-from .models import LeaveRequest, Employee
+from .models import LeaveRequest, Employee, Notification
 
 class AttendanceSerializer(serializers.ModelSerializer):
     class Meta:
@@ -46,3 +46,8 @@ class AttendanceReportResponseSerializer(serializers.Serializer):
     manager_id = serializers.IntegerField()
     start_date = serializers.DateField()
     end_date = serializers.DateField()
+
+class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notification
+        fields = ['id', 'employee', 'message', 'is_read', 'timestamp']

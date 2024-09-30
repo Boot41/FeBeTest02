@@ -193,3 +193,32 @@ class MyApiTests(APITestCase):
         response = self.client.get(reverse('generate_attendance_report', args=[1]), {"start_date": "2023-01-01", "end_date": "2023-01-31"})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 0)
+
+    @patch('app.models.LeaveRequest.objects.filter')
+    def test_fetch_notifications_valid(self, mock_filter):
+        mock_filter.return_value.values.return_value = [{"id": 1, "start_date": "2023-01-01", "end_date": "2023-01-05", "status": "Pending", "reason": "Family Emergency"}]
+        response = self.client.get(reverse('fetch_notifications', args=[1]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+
+    @patch('app.models.LeaveRequest.objects.filter')
+    def test_fetch_notifications_invalid_method(self, mock_filter):
+        response = self.client.post(reverse('fetch_notifications', args=[1]))
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    @patch('app.models.LeaveRequest.objects.get')
+    def test_mark_notification_as_read_valid(self, mock_get):
+        mock_get.return_value = MagicMock(id=1)
+        response = self.client.post(reverse('mark_notification_as_read', args=[1, 1]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["message"], 'Notification marked as read.')
+
+    @patch('app.models.LeaveRequest.objects.get')
+    def test_mark_notification_as_read_not_found(self, mock_get):
+        mock_get.side_effect = LeaveRequest.DoesNotExist
+        response = self.client.post(reverse('mark_notification_as_read', args=[1, 999]))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_mark_notification_as_read_invalid_method(self):
+        response = self.client.get(reverse('mark_notification_as_read', args=[1, 1]))
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

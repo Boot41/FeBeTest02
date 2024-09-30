@@ -147,4 +147,20 @@ class AttendanceReportResponseSerializerTestCase(serializers.ModelSerializer):
         self.assertIn('manager_id', serializer.errors)
         self.assertIn('start_date', serializer.errors)
         self.assertIn('end_date', serializer.errors)
-    
+
+class NotificationSerializerTestCase(serializers.ModelSerializer):
+    def setUp(self):
+        self.valid_data = {"employee": 1, "message": "Test notification", "is_read": False, "timestamp": "2023-10-01T12:00:00Z"}
+        self.invalid_data = {"employee": "invalid", "message": "", "is_read": "wrong_type"}
+
+    def test_valid_notification_serializer(self):
+        serializer = NotificationSerializer(data=self.valid_data)
+        self.assertTrue(serializer.is_valid())
+        self.assertEqual(serializer.validated_data, self.valid_data)
+
+    def test_invalid_notification_serializer(self):
+        serializer = NotificationSerializer(data=self.invalid_data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('employee', serializer.errors)
+        self.assertIn('message', serializer.errors)
+        self.assertIn('is_read', serializer.errors)

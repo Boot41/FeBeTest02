@@ -1,5 +1,5 @@
 from django.test import TestCase
-from .models import Employee, Attendance, LeaveBalance, RecentActivity, LeaveRequest, Organization, EmployeeDirectory, HierarchicalStructure, EmployeeProfile, AttendanceReport
+from .models import Employee, Attendance, LeaveBalance, RecentActivity, LeaveRequest, Organization, EmployeeDirectory, HierarchicalStructure, EmployeeProfile, AttendanceReport, Notification
 
 class EmployeeModelTest(TestCase):
     def setUp(self):
@@ -138,3 +138,20 @@ class AttendanceReportModelTest(TestCase):
     def test_attendance_report_no_manager(self):
         with self.assertRaises(ValueError):
             AttendanceReport.objects.create(manager=None, date_range_start='2023-10-01', date_range_end='2023-10-31', attendance_data={})
+
+class NotificationModelTest(TestCase):
+    def setUp(self):
+        self.employee = Employee.objects.create(name='Sam Green')
+        self.notification = Notification.objects.create(employee=self.employee, message='You have a new message')
+
+    def test_notification_creation(self):
+        self.assertEqual(self.notification.message, 'You have a new message')
+        self.assertEqual(self.notification.is_read, False)
+        self.assertIsNotNone(self.notification.timestamp)
+
+    def test_notification_foreign_key(self):
+        self.assertEqual(self.notification.employee, self.employee)
+
+    def test_notification_empty_message(self):
+        with self.assertRaises(ValueError):
+            Notification.objects.create(employee=self.employee, message='')

@@ -3,6 +3,7 @@ from .views import get_attendance, get_leave_balance, get_recent_activities, req
 from .views import get_organization_directory, get_organization_structure
 from .views import get_employee_profile, update_employee_profile
 from .views import generate_attendance_report
+from .views import get_notifications, mark_notification_as_read
 
 urlpatterns = [
     path('employee/<int:employee_id>/attendance-details', get_attendance, name='fetch_attendance'),
@@ -18,4 +19,6 @@ urlpatterns = [
     path('api/organization/structure', get_organization_structure, name='fetch_organization_structure'),
     path('api/employee/<int:employee_id>/profile', get_employee_profile, name='get_employee_profile'),
     path('api/employee/<int:employee_id>/profile/update', update_employee_profile, name='update_employee_profile'),
+    path('api/employee/<int:employee_id>/notifications', get_notifications, name='get_notifications'),
+    path('api/employee/<int:employee_id>/notifications/<int:notification_id>/read', mark_notification_as_read, name='mark_notification_as_read'),
 ]

@@ -1,7 +1,5 @@
 from django.db import models
 
-# Create your models here.
-
 class Employee(models.Model):
     employee_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
@@ -45,7 +43,6 @@ class EmployeeProfile(models.Model):
     address = models.TextField(null=True, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)
     position = models.CharField(max_length=255, null=True, blank=True)
-    # Add other fields as necessary
 
 class AttendanceReport(models.Model):
     manager = models.ForeignKey(Employee, on_delete=models.CASCADE)
@@ -53,3 +50,9 @@ class AttendanceReport(models.Model):
     date_range_end = models.DateField()
     report_generated_on = models.DateTimeField(auto_now_add=True)
     attendance_data = models.JSONField()  # Store attendance data in JSON format
+
+class Notification(models.Model):
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    message = models.CharField(max_length=255)
+    is_read = models.BooleanField(default=False)
+    timestamp = models.DateTimeField(auto_now_add=True)

@@ -69,23 +69,19 @@ def test_functionality_with_valid_authentication(client, auth_user):
     assert response.status_code == 200
     assert 'key' in response.json()
 
-
 def test_functionality_with_invalid_authentication(client):
     response = client.get('/api/your-endpoint/', HTTP_AUTHORIZATION='Bearer invalid_token')
     assert response.status_code == 401
 
-
 def test_functionality_with_unauthorized_action(client, auth_user):
     response = client.post('/api/your-endpoint/secure-action/', {'data': 'value'}, HTTP_AUTHORIZATION='Bearer ' + auth_user.token)
     assert response.status_code == 403
-
 
 def test_functionality_with_rate_limiting(client):
     for _ in range(10):
         client.get('/api/your-endpoint/')
     response = client.get('/api/your-endpoint/')
     assert response.status_code == 429
-
 
 def test_functionality_with_non_json_data(client):
     response = client.post('/api/your-endpoint/', 'This is a string instead of JSON')

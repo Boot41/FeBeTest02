@@ -10,3 +10,5 @@ rest_framework
 # Added for employee profile update functionality
 
 # Added for attendance report generation
+
+# Added for employee notifications regarding leave request statuses
