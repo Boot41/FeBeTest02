@@ -174,3 +174,22 @@ class MyApiTests(APITestCase):
     def test_update_employee_profile_invalid_json(self):
         response = self.client.put(reverse('update_employee_profile', args=[1]), "Invalid JSON")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    @patch('app.models.Attendance.objects.filter')
+    def test_generate_attendance_report_valid(self, mock_filter):
+        mock_filter.return_value.values.return_value = [{"employee_id": 1, "date": "2023-01-01", "status": "Present"}]
+        response = self.client.get(reverse('generate_attendance_report', args=[1]), {"start_date": "2023-01-01", "end_date": "2023-01-31"})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+
+    @patch('app.models.Attendance.objects.filter')
+    def test_generate_attendance_report_invalid_method(self, mock_filter):
+        response = self.client.post(reverse('generate_attendance_report', args=[1]), {"start_date": "2023-01-01", "end_date": "2023-01-31"})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    @patch('app.models.Attendance.objects.filter')
+    def test_generate_attendance_report_no_records(self, mock_filter):
+        mock_filter.return_value.values.return_value = []
+        response = self.client.get(reverse('generate_attendance_report', args=[1]), {"start_date": "2023-01-01", "end_date": "2023-01-31"})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 0)

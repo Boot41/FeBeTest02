@@ -202,3 +202,15 @@ class OrganizationStructureAPITests(APITestCase):
         url = reverse('update_employee_profile', args=['invalid'])
         response = self.client.put(url, data={'name': 'John Doe'})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_update_employee_profile_missing_field(self):
+        url = reverse('update_employee_profile', args=[1])
+        response = self.client.put(url, data={})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_update_employee_profile_database_error(self):
+        url = reverse('update_employee_profile', args=[1])
+        with patch('app.views.update_employee_profile') as mock:
+            mock.side_effect = Exception('Database error')
+            response = self.client.put(url, data={'name': 'John Doe'})
+            self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)

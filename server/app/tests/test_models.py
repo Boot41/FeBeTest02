@@ -1,5 +1,5 @@
 from django.test import TestCase
-from .models import Employee, Attendance, LeaveBalance, RecentActivity, LeaveRequest, Organization, EmployeeDirectory, HierarchicalStructure
+from .models import Employee, Attendance, LeaveBalance, RecentActivity, LeaveRequest, Organization, EmployeeDirectory, HierarchicalStructure, EmployeeProfile, AttendanceReport
 
 class EmployeeModelTest(TestCase):
     def setUp(self):
@@ -107,3 +107,34 @@ class HierarchicalStructureModelTest(TestCase):
     def test_hierarchical_structure_creation(self):
         self.assertEqual(self.hierarchy.employee, self.subordinate)
         self.assertEqual(self.hierarchy.manager, self.manager)
+
+class EmployeeProfileModelTest(TestCase):
+    def setUp(self):
+        self.employee = Employee.objects.create(name='Alice Jones')
+        self.employee_profile = EmployeeProfile.objects.create(employee=self.employee, phone_number='1234567890', address='123 Main St', date_of_birth='1990-01-01', position='Developer')
+
+    def test_employee_profile_creation(self):
+        self.assertEqual(self.employee_profile.employee, self.employee)
+        self.assertEqual(self.employee_profile.phone_number, '1234567890')
+        self.assertEqual(self.employee_profile.address, '123 Main St')
+        self.assertEqual(self.employee_profile.date_of_birth, '1990-01-01')
+        self.assertEqual(self.employee_profile.position, 'Developer')
+
+    def test_employee_profile_no_employee(self):
+        with self.assertRaises(ValueError):
+            EmployeeProfile.objects.create(employee=None, phone_number='1234567890')
+
+class AttendanceReportModelTest(TestCase):
+    def setUp(self):
+        self.manager = Employee.objects.create(name='Manager Lee')
+        self.attendance_report = AttendanceReport.objects.create(manager=self.manager, date_range_start='2023-10-01', date_range_end='2023-10-31', attendance_data={'present': 20, 'absent': 5})
+
+    def test_attendance_report_creation(self):
+        self.assertEqual(self.attendance_report.manager, self.manager)
+        self.assertEqual(self.attendance_report.date_range_start, '2023-10-01')
+        self.assertEqual(self.attendance_report.date_range_end, '2023-10-31')
+        self.assertEqual(self.attendance_report.attendance_data, {'present': 20, 'absent': 5})
+
+    def test_attendance_report_no_manager(self):
+        with self.assertRaises(ValueError):
+            AttendanceReport.objects.create(manager=None, date_range_start='2023-10-01', date_range_end='2023-10-31', attendance_data={})

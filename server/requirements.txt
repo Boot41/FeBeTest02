@@ -8,3 +8,5 @@ rest_framework
 # Added for organization directory and hierarchy features
 
 # Added for employee profile update functionality
+
+# Added for attendance report generation

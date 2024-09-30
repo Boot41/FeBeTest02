@@ -3,6 +3,8 @@ from django.http import JsonResponse
 from .models import Attendance, LeaveBalance, RecentActivity, Employee
 from django.views.decorators.csrf import csrf_exempt
 import json
+from django.utils.dateparse import parse_date
+from datetime import timedelta
 
 # Create your views here.
 
@@ -77,4 +79,19 @@ def update_employee_profile(request, employee_id):
             return JsonResponse({'error': 'Employee not found.'}, status=404)
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON data.'}, status=400)
+    return JsonResponse({'error': 'Invalid request method.'}, status=400)
+
+@csrf_exempt
+def generate_attendance_report(request, manager_id):
+    if request.method == 'GET':
+        start_date = request.GET.get('start_date')
+        end_date = request.GET.get('end_date')
+        if not start_date or not end_date:
+            return JsonResponse({'error': 'Start date and end date are required.'}, status=400)
+        start_date = parse_date(start_date)
+        end_date = parse_date(end_date)
+        if start_date > end_date:
+            return JsonResponse({'error': 'Start date must be before end date.'}, status=400)
+        attendance_reports = Attendance.objects.filter(employee__manager_id=manager_id, date__range=(start_date, end_date)).values('employee_id', 'date', 'status')
+        return JsonResponse(list(attendance_reports), safe=False)
     return JsonResponse({'error': 'Invalid request method.'}, status=400)

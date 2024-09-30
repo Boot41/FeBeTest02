@@ -35,3 +35,14 @@ class EmployeeProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employee
         fields = ['employee_id', 'name', 'email', 'phone', 'address']  # Include necessary fields to update the profile.
+
+class AttendanceReportSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Attendance
+        fields = ['employee_id', 'date', 'status']
+
+class AttendanceReportResponseSerializer(serializers.Serializer):
+    attendance_report = AttendanceReportSerializer(many=True)
+    manager_id = serializers.IntegerField()
+    start_date = serializers.DateField()
+    end_date = serializers.DateField()

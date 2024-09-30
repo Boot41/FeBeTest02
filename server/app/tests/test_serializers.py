@@ -130,3 +130,21 @@ class EmployeeProfileSerializerTestCase(serializers.ModelSerializer):
         self.assertIn('email', serializer.errors)
         self.assertIn('phone', serializer.errors)
         self.assertIn('address', serializer.errors)
+
+class AttendanceReportResponseSerializerTestCase(serializers.ModelSerializer):
+    def setUp(self):
+        self.valid_data = {"attendance_report": [{"employee_id": 1, "date": "2023-10-01", "status": "Present"}], "manager_id": 1, "start_date": "2023-10-01", "end_date": "2023-10-31"}
+        self.invalid_data = {"attendance_report": [], "manager_id": -1, "start_date": "invalid-date", "end_date": ""}
+
+    def test_valid_attendance_report_response_serializer(self):
+        serializer = AttendanceReportResponseSerializer(data=self.valid_data)
+        self.assertTrue(serializer.is_valid())
+        self.assertEqual(serializer.validated_data, self.valid_data)
+
+    def test_invalid_attendance_report_response_serializer(self):
+        serializer = AttendanceReportResponseSerializer(data=self.invalid_data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('manager_id', serializer.errors)
+        self.assertIn('start_date', serializer.errors)
+        self.assertIn('end_date', serializer.errors)
+    

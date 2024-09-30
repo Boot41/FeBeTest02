@@ -46,3 +46,10 @@ class EmployeeProfile(models.Model):
     date_of_birth = models.DateField(null=True, blank=True)
     position = models.CharField(max_length=255, null=True, blank=True)
     # Add other fields as necessary
+
+class AttendanceReport(models.Model):
+    manager = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    date_range_start = models.DateField()
+    date_range_end = models.DateField()
+    report_generated_on = models.DateTimeField(auto_now_add=True)
+    attendance_data = models.JSONField()  # Store attendance data in JSON format
