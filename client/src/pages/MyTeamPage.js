@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'; // Import React and hooks for state and effect
 import TeamAttendanceOverview from '../components/TeamAttendanceOverview'; // Import the attendance overview component
 import TeamLeaveRequests from '../components/TeamLeaveRequests'; // Import the leave requests component
+import AttendanceReport from '../components/AttendanceReport'; // Import the attendance report component
 
 const MyTeamPage = () => {
     const [attendanceData, setAttendanceData] = useState(null); // State to hold attendance data
@@ -44,6 +45,7 @@ const MyTeamPage = () => {
                 <>
                     <TeamAttendanceOverview data={attendanceData} /> // Attendance overview component with data
                     <TeamLeaveRequests requests={leaveRequests} /> // Leave requests component with data
+                    <AttendanceReport managerId="123" /> // Include Attendance Report component
                 </>
             ) : (
                 <div className="flex justify-center items-center h-full">
@@ -54,4 +56,4 @@ const MyTeamPage = () => {
     );
 };
 
-export default MyTeamPage; // Export the component for use in the application.
+export default MyTeamPage; // Export the component for use in the application
