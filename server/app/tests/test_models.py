@@ -66,3 +66,17 @@ class LeaveRequestModelTest(TestCase):
     def test_leave_request_no_employee(self):
         with self.assertRaises(ValueError):
             LeaveRequest.objects.create(employee=None, leave_type='Vacation', start_date='2023-10-05', end_date='2023-10-10')
+
+    def test_leave_request_empty_reason(self):
+        leave_request = LeaveRequest.objects.create(employee=self.employee, leave_type='Vacation', start_date='2023-10-05', end_date='2023-10-10', reason='')
+        self.assertEqual(leave_request.reason, '')
+
+    def test_leave_request_with_long_reason(self):
+        long_reason = 'a' * 256
+        with self.assertRaises(ValueError):
+            LeaveRequest.objects.create(employee=self.employee, leave_type='Vacation', start_date='2023-10-05', end_date='2023-10-10', reason=long_reason)
+
+    def test_leave_request_status_update(self):
+        self.leave_request.status = 'approved'
+        self.leave_request.save()
+        self.assertEqual(self.leave_request.status, 'approved')

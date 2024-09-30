@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Attendance, LeaveBalance, RecentActivities
+from .models import Attendance, LeaveBalance, RecentActivities, LeaveRequest
 from rest_framework.exceptions import ValidationError
 
 class AttendanceSerializerTestCase(serializers.ModelSerializer):
@@ -79,6 +79,18 @@ class AttendanceDetailSerializerTestCase(serializers.ModelSerializer):
 
     def test_invalid_attendance_detail_serializer(self):
         serializer = AttendanceDetailSerializer(data=self.invalid_data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('date', serializer.errors)
+        self.assertIn('status', serializer.errors)
+
+    def test_edge_case_empty_input(self):
+        serializer = AttendanceDetailSerializer(data={})
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('date', serializer.errors)
+        self.assertIn('status', serializer.errors)
+
+    def test_edge_case_invalid_types(self):
+        serializer = AttendanceDetailSerializer(data={"date": 12345, "status": None})
         self.assertFalse(serializer.is_valid())
         self.assertIn('date', serializer.errors)
         self.assertIn('status', serializer.errors)

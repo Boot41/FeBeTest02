@@ -82,3 +82,67 @@ class RequestLeaveAPITests(APITestCase):
         url = reverse('request_leave', args=['invalid'])
         response = self.client.post(url, data={'leave_type': 'sick'})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+class TeamAttendanceAPITests(APITestCase):
+    def test_get_team_attendance_success(self):
+        url = reverse('fetch_team_attendance', args=[1])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_get_team_attendance_not_found(self):
+        url = reverse('fetch_team_attendance', args=[999])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_get_team_attendance_invalid_manager_id(self):
+        url = reverse('fetch_team_attendance', args=['invalid'])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+class TeamLeaveRequestsAPITests(APITestCase):
+    def test_get_team_leave_requests_success(self):
+        url = reverse('fetch_team_leave_requests', args=[1])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_get_team_leave_requests_not_found(self):
+        url = reverse('fetch_team_leave_requests', args=[999])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_get_team_leave_requests_invalid_manager_id(self):
+        url = reverse('fetch_team_leave_requests', args=['invalid'])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+class LeaveRequestApprovalAPITests(APITestCase):
+    def test_approve_leave_request_success(self):
+        url = reverse('approve_leave_request', args=[1, 1])
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_approve_leave_request_not_found(self):
+        url = reverse('approve_leave_request', args=[1, 999])
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_approve_leave_request_invalid_manager_id(self):
+        url = reverse('approve_leave_request', args=['invalid', 1])
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+class LeaveRequestDenialAPITests(APITestCase):
+    def test_deny_leave_request_success(self):
+        url = reverse('deny_leave_request', args=[1, 1])
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_deny_leave_request_not_found(self):
+        url = reverse('deny_leave_request', args=[1, 999])
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_deny_leave_request_invalid_manager_id(self):
+        url = reverse('deny_leave_request', args=['invalid', 1])
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

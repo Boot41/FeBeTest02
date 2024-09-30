@@ -55,3 +55,72 @@ class MyApiTests(APITestCase):
         mock_delete.side_effect = Exception("Not Found")
         response = self.client.delete(reverse('my_endpoint', args=[999]))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    @patch('app.models.Attendance.objects.filter')
+    def test_get_attendance_valid(self, mock_filter):
+        mock_filter.return_value.values.return_value = [{"date": "2023-01-01", "status": "Present"}]
+        response = self.client.get(reverse('get_attendance', args=[1]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+
+    @patch('app.models.Attendance.objects.filter')
+    def test_get_attendance_no_records(self, mock_filter):
+        mock_filter.return_value.values.return_value = []
+        response = self.client.get(reverse('get_attendance', args=[2]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 0)
+
+    @patch('app.models.LeaveBalance.objects.filter')
+    def test_get_leave_balance_valid(self, mock_filter):
+        mock_filter.return_value.values.return_value = [{"leave_type": "Sick", "balance": 5}]
+        response = self.client.get(reverse('get_leave_balance', args=[1]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+
+    @patch('app.models.RecentActivity.objects.filter')
+    def test_get_recent_activities_valid(self, mock_filter):
+        mock_filter.return_value.values.return_value = [{"activity": "Logged in"}]
+        response = self.client.get(reverse('get_recent_activities', args=[1]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+
+    def test_request_leave_valid(self):
+        response = self.client.post(reverse('request_leave', args=[1]), {"leave_type": "Sick", "days": 3})
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data["message"], 'Leave request submitted.')
+
+    def test_request_leave_invalid_method(self):
+        response = self.client.get(reverse('request_leave', args=[1]))
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    @patch('app.models.LeaveBalance.objects.filter')
+    def test_get_team_attendance_valid(self, mock_filter):
+        mock_filter.return_value.values.return_value = [{"employee_id": 1, "date": "2023-01-01", "status": "Present"}]
+        response = self.client.get(reverse('get_team_attendance', args=[1]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+
+    @patch('app.models.LeaveBalance.objects.filter')
+    def test_get_team_leave_requests_valid(self, mock_filter):
+        mock_filter.return_value.values.return_value = [{"employee_id": 1, "leave_type": "Sick", "balance": 5}]
+        response = self.client.get(reverse('get_team_leave_requests', args=[1]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+
+    def test_approve_leave_request_valid(self):
+        response = self.client.post(reverse('approve_leave_request', args=[1, 1]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["message"], 'Leave request approved.')
+
+    def test_approve_leave_request_invalid_method(self):
+        response = self.client.get(reverse('approve_leave_request', args=[1, 1]))
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_deny_leave_request_valid(self):
+        response = self.client.post(reverse('deny_leave_request', args=[1, 1]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["message"], 'Leave request denied.')
+
+    def test_deny_leave_request_invalid_method(self):
+        response = self.client.get(reverse('deny_leave_request', args=[1, 1]))
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

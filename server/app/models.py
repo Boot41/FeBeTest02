@@ -20,3 +20,10 @@ class RecentActivity(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     activity = models.CharField(max_length=255)
     timestamp = models.DateTimeField(auto_now_add=True)
+
+class LeaveRequest(models.Model):
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    status = models.CharField(max_length=10, default='pending')
+    reason = models.CharField(max_length=255)
