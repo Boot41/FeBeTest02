@@ -1,25 +1,28 @@
-import logo from './logo.svg';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import DashboardPage from './pages/DashboardPage';
+import MePage from './pages/MePage'; 
+import MyTeamPage from './pages/MyTeamPage'; 
+import OrganizationPage from './pages/OrganizationPage'; 
+import ProfilePage from './pages/ProfilePage';
+import Header from './components/Header';
+import Footer from './components/Footer';
 import './App.css';
 
-function App() {
+function AppWrapper() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Header />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/me" element={<MePage />} />
+        <Route path="/myteam" element={<MyTeamPage />} />
+        <Route path="/organization" element={<OrganizationPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+      </Routes>
+      <Footer />
+    </Router>
   );
 }
 
-export default App;
+export default AppWrapper;

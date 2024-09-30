@@ -1,0 +1,18 @@
+django
+rest_framework
+
+# Added for attendance and leave features
+
+# Added for team attendance and leave request APIs
+
+# Added for organization directory and hierarchy features
+
+# Added for employee profile update functionality
+
+# Added for attendance report generation
+
+# Added for employee notifications regarding leave request statuses
+
+# Added for role management APIs
+
+# Added for calendar integration and attendance logging
