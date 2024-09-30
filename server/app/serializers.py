@@ -30,3 +30,8 @@ class EmployeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employee
         fields = '__all__'
+
+class EmployeeProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Employee
+        fields = ['employee_id', 'name', 'email', 'phone', 'address']  # Include necessary fields to update the profile.

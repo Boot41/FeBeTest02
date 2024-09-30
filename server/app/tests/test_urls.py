@@ -172,3 +172,33 @@ class OrganizationStructureAPITests(APITestCase):
             mock.side_effect = Exception('Database error')
             response = self.client.get(url)
             self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def test_get_employee_profile_success(self):
+        url = reverse('get_employee_profile', args=[1])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_get_employee_profile_not_found(self):
+        url = reverse('get_employee_profile', args=[999])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_get_employee_profile_invalid_employee_id(self):
+        url = reverse('get_employee_profile', args=['invalid'])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_update_employee_profile_success(self):
+        url = reverse('update_employee_profile', args=[1])
+        response = self.client.put(url, data={'name': 'John Doe', 'position': 'Developer'})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_update_employee_profile_not_found(self):
+        url = reverse('update_employee_profile', args=[999])
+        response = self.client.put(url, data={'name': 'John Doe'})
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_update_employee_profile_invalid_employee_id(self):
+        url = reverse('update_employee_profile', args=['invalid'])
+        response = self.client.put(url, data={'name': 'John Doe'})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

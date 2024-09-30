@@ -111,3 +111,22 @@ class EmployeeSerializerTestCase(serializers.ModelSerializer):
         self.assertIn('first_name', serializer.errors)
         self.assertIn('last_name', serializer.errors)
         self.assertIn('email', serializer.errors)
+
+class EmployeeProfileSerializerTestCase(serializers.ModelSerializer):
+    def setUp(self):
+        self.valid_data = {"employee_id": 1, "name": "Jane Doe", "email": "jane.doe@example.com", "phone": "1234567890", "address": "123 Main St"}
+        self.invalid_data = {"employee_id": "invalid", "name": "", "email": "invalid-email", "phone": "invalid-phone", "address": ""}
+
+    def test_valid_employee_profile_serializer(self):
+        serializer = EmployeeProfileSerializer(data=self.valid_data)
+        self.assertTrue(serializer.is_valid())
+        self.assertEqual(serializer.validated_data, self.valid_data)
+
+    def test_invalid_employee_profile_serializer(self):
+        serializer = EmployeeProfileSerializer(data=self.invalid_data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('employee_id', serializer.errors)
+        self.assertIn('name', serializer.errors)
+        self.assertIn('email', serializer.errors)
+        self.assertIn('phone', serializer.errors)
+        self.assertIn('address', serializer.errors)

@@ -38,3 +38,11 @@ class EmployeeDirectory(models.Model):
 class HierarchicalStructure(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='subordinates')
     manager = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='superiors')
+
+class EmployeeProfile(models.Model):
+    employee = models.OneToOneField(Employee, on_delete=models.CASCADE)
+    phone_number = models.CharField(max_length=15, null=True, blank=True)
+    address = models.TextField(null=True, blank=True)
+    date_of_birth = models.DateField(null=True, blank=True)
+    position = models.CharField(max_length=255, null=True, blank=True)
+    # Add other fields as necessary

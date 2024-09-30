@@ -137,3 +137,40 @@ class MyApiTests(APITestCase):
         response = self.client.get(reverse('get_organization_structure'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIsInstance(response.data, list)
+
+    @patch('app.models.Employee.objects.get')
+    def test_get_employee_profile_valid(self, mock_get):
+        mock_get.return_value = MagicMock(employee_id=1, name='John Doe')
+        response = self.client.get(reverse('get_employee_profile', args=[1]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['name'], 'John Doe')
+
+    @patch('app.models.Employee.objects.get')
+    def test_get_employee_profile_not_found(self, mock_get):
+        mock_get.side_effect = Employee.DoesNotExist
+        response = self.client.get(reverse('get_employee_profile', args=[999]))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_get_employee_profile_invalid_method(self):
+        response = self.client.post(reverse('get_employee_profile', args=[1]))
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    @patch('app.models.Employee.objects.get')
+    def test_update_employee_profile_valid(self, mock_get):
+        mock_get.return_value = MagicMock(employee_id=1, name='John Doe')
+        response = self.client.put(reverse('update_employee_profile', args=[1]), {"name": "Jane Doe"})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    @patch('app.models.Employee.objects.get')
+    def test_update_employee_profile_not_found(self, mock_get):
+        mock_get.side_effect = Employee.DoesNotExist
+        response = self.client.put(reverse('update_employee_profile', args=[999]), {"name": "Jane Doe"})
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_update_employee_profile_invalid_method(self):
+        response = self.client.post(reverse('update_employee_profile', args=[1]), {"name": "Jane Doe"})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_update_employee_profile_invalid_json(self):
+        response = self.client.put(reverse('update_employee_profile', args=[1]), "Invalid JSON")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
