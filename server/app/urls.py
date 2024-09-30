@@ -4,6 +4,7 @@ from .views import get_organization_directory, get_organization_structure
 from .views import get_employee_profile, update_employee_profile
 from .views import generate_attendance_report
 from .views import get_notifications, mark_notification_as_read
+from .views import fetch_roles, create_role, update_role_permissions, delete_role
 
 urlpatterns = [
     path('employee/<int:employee_id>/attendance-details', get_attendance, name='fetch_attendance'),
@@ -21,4 +22,8 @@ urlpatterns = [
     path('api/employee/<int:employee_id>/profile/update', update_employee_profile, name='update_employee_profile'),
     path('api/employee/<int:employee_id>/notifications', get_notifications, name='get_notifications'),
     path('api/employee/<int:employee_id>/notifications/<int:notification_id>/read', mark_notification_as_read, name='mark_notification_as_read'),
+    path('api/hr/roles', fetch_roles, name='fetch_roles'),
+    path('api/hr/roles/create', create_role, name='create_role'),
+    path('api/hr/roles/<int:role_id>/update', update_role_permissions, name='update_role_permissions'),
+    path('api/hr/roles/<int:role_id>/delete', delete_role, name='delete_role'),
 ]

@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from .models import Attendance, LeaveBalance, RecentActivity, Employee, LeaveRequest, Notification
+from .models import Attendance, LeaveBalance, RecentActivity, Employee, LeaveRequest, Notification, Role
 from django.views.decorators.csrf import csrf_exempt
 import json
 from django.utils.dateparse import parse_date
@@ -22,6 +22,50 @@ def mark_notification_as_read(request, employee_id, notification_id):
             return JsonResponse({'message': 'Notification marked as read.'}, status=200)
         except Notification.DoesNotExist:
             return JsonResponse({'error': 'Notification not found.'}, status=404)
+    return JsonResponse({'error': 'Invalid request method.'}, status=400)
+
+@csrf_exempt
+def fetch_roles(request):
+    if request.method == 'GET':
+        roles = Role.objects.all().values('id', 'name', 'permissions')
+        return JsonResponse(list(roles), safe=False)
+    return JsonResponse({'error': 'Invalid request method.'}, status=400)
+
+@csrf_exempt
+def create_role(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        try:
+            role = Role.objects.create(name=data['name'], permissions=data['permissions'])
+            return JsonResponse({'id': role.id, 'name': role.name, 'permissions': role.permissions}, status=201)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+    return JsonResponse({'error': 'Invalid request method.'}, status=400)
+
+@csrf_exempt
+def update_role(request, role_id):
+    if request.method == 'PUT':
+        data = json.loads(request.body)
+        try:
+            role = Role.objects.get(id=role_id)
+            role.permissions = data['permissions']
+            role.save()
+            return JsonResponse({'message': 'Role updated successfully.'}, status=200)
+        except Role.DoesNotExist:
+            return JsonResponse({'error': 'Role not found.'}, status=404)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+    return JsonResponse({'error': 'Invalid request method.'}, status=400)
+
+@csrf_exempt
+def delete_role(request, role_id):
+    if request.method == 'DELETE':
+        try:
+            role = Role.objects.get(id=role_id)
+            role.delete()
+            return JsonResponse({'message': 'Role deleted successfully.'}, status=200)
+        except Role.DoesNotExist:
+            return JsonResponse({'error': 'Role not found.'}, status=404)
     return JsonResponse({'error': 'Invalid request method.'}, status=400)
 
 ... (existing view functions)

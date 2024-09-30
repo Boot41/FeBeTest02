@@ -164,3 +164,50 @@ class NotificationSerializerTestCase(serializers.ModelSerializer):
         self.assertIn('employee', serializer.errors)
         self.assertIn('message', serializer.errors)
         self.assertIn('is_read', serializer.errors)
+
+class RoleSerializerTestCase(serializers.ModelSerializer):
+    def setUp(self):
+        self.valid_data = {"name": "Admin", "permissions": ["view", "edit"]}
+        self.invalid_data = {"name": "", "permissions": "invalid_permissions"}
+
+    def test_valid_role_serializer(self):
+        serializer = RoleSerializer(data=self.valid_data)
+        self.assertTrue(serializer.is_valid())
+        self.assertEqual(serializer.validated_data, self.valid_data)
+
+    def test_invalid_role_serializer(self):
+        serializer = RoleSerializer(data=self.invalid_data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('name', serializer.errors)
+        self.assertIn('permissions', serializer.errors)
+
+class RoleCreateSerializerTestCase(serializers.ModelSerializer):
+    def setUp(self):
+        self.valid_data = {"name": "User", "permissions": ["view"]}
+        self.invalid_data = {"name": "", "permissions": "wrong_permissions"}
+
+    def test_valid_role_create_serializer(self):
+        serializer = RoleCreateSerializer(data=self.valid_data)
+        self.assertTrue(serializer.is_valid())
+        self.assertEqual(serializer.validated_data, self.valid_data)
+
+    def test_invalid_role_create_serializer(self):
+        serializer = RoleCreateSerializer(data=self.invalid_data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('name', serializer.errors)
+        self.assertIn('permissions', serializer.errors)
+
+class RoleUpdateSerializerTestCase(serializers.ModelSerializer):
+    def setUp(self):
+        self.valid_data = {"permissions": ["edit"]}
+        self.invalid_data = {"permissions": "invalid_permissions"}
+
+    def test_valid_role_update_serializer(self):
+        serializer = RoleUpdateSerializer(data=self.valid_data)
+        self.assertTrue(serializer.is_valid())
+        self.assertEqual(serializer.validated_data, self.valid_data)
+
+    def test_invalid_role_update_serializer(self):
+        serializer = RoleUpdateSerializer(data=self.invalid_data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('permissions', serializer.errors)

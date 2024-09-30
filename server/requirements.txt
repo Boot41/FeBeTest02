@@ -12,3 +12,6 @@ rest_framework
 # Added for attendance report generation
 
 # Added for employee notifications regarding leave request statuses
+
+# Added for role management APIs
+

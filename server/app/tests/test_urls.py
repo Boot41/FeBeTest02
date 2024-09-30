@@ -244,3 +244,38 @@ class OrganizationStructureAPITests(APITestCase):
         url = reverse('mark_notification_as_read', args=['invalid', 1])
         response = self.client.post(url)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_fetch_roles_success(self):
+        url = reverse('fetch_roles')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_create_role_success(self):
+        url = reverse('create_role')
+        response = self.client.post(url, data={'role_name': 'New Role'})
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_create_role_validation_error(self):
+        url = reverse('create_role')
+        response = self.client.post(url, data={})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_update_role_permissions_success(self):
+        url = reverse('update_role_permissions', args=[1])
+        response = self.client.put(url, data={'permissions': ['can_view', 'can_edit']})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_update_role_permissions_not_found(self):
+        url = reverse('update_role_permissions', args=[999])
+        response = self.client.put(url, data={'permissions': ['can_view']})
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_delete_role_success(self):
+        url = reverse('delete_role', args=[1])
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_delete_role_not_found(self):
+        url = reverse('delete_role', args=[999])
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

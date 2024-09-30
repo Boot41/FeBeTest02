@@ -1,5 +1,5 @@
 from django.test import TestCase
-from .models import Employee, Attendance, LeaveBalance, RecentActivity, LeaveRequest, Organization, EmployeeDirectory, HierarchicalStructure, EmployeeProfile, AttendanceReport, Notification
+from .models import Employee, Attendance, LeaveBalance, RecentActivity, LeaveRequest, Organization, EmployeeDirectory, HierarchicalStructure, EmployeeProfile, AttendanceReport, Notification, Role, EmployeeRole
 
 class EmployeeModelTest(TestCase):
     def setUp(self):
@@ -155,3 +155,25 @@ class NotificationModelTest(TestCase):
     def test_notification_empty_message(self):
         with self.assertRaises(ValueError):
             Notification.objects.create(employee=self.employee, message='')
+
+class RoleModelTest(TestCase):
+    def setUp(self):
+        self.role = Role.objects.create(name='Admin', permissions={'read': True, 'write': True})
+
+    def test_role_creation(self):
+        self.assertEqual(self.role.name, 'Admin')
+        self.assertEqual(self.role.permissions, {'read': True, 'write': True})
+
+class EmployeeRoleModelTest(TestCase):
+    def setUp(self):
+        self.role = Role.objects.create(name='User', permissions={'read': True})
+        self.employee = Employee.objects.create(name='Tom Brown')
+        self.employee_role = EmployeeRole.objects.create(employee=self.employee, role=self.role)
+
+    def test_employee_role_creation(self):
+        self.assertEqual(self.employee_role.employee, self.employee)
+        self.assertEqual(self.employee_role.role, self.role)
+
+    def test_employee_role_foreign_key(self):
+        self.assertEqual(self.employee_role.employee, self.employee)
+        self.assertEqual(self.employee_role.role, self.role)

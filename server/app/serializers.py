@@ -1,10 +1,9 @@
 from django.db import models
 
-# Create your models here.
-
 from rest_framework import serializers
 from .models import Attendance, LeaveBalance, RecentActivity
 from .models import LeaveRequest, Employee, Notification
+from .models import Role
 
 class AttendanceSerializer(serializers.ModelSerializer):
     class Meta:
@@ -34,7 +33,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
 class EmployeeProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employee
-        fields = ['employee_id', 'name', 'email', 'phone', 'address']  # Include necessary fields to update the profile.
+        fields = ['employee_id', 'name', 'email', 'phone', 'address']
 
 class AttendanceReportSerializer(serializers.ModelSerializer):
     class Meta:
@@ -51,3 +50,18 @@ class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
         fields = ['id', 'employee', 'message', 'is_read', 'timestamp']
+
+class RoleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Role
+        fields = ['id', 'name', 'permissions']
+
+class RoleCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Role
+        fields = ['name', 'permissions']
+
+class RoleUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Role
+        fields = ['permissions']
