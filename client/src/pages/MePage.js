@@ -37,4 +37,4 @@ const MePage = () => {
   );
 };
 
-export default MePage; // Export the MePage component
+export default MePage; // Export the MePage component.
