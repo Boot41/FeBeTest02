@@ -177,3 +177,39 @@ class EmployeeRoleModelTest(TestCase):
     def test_employee_role_foreign_key(self):
         self.assertEqual(self.employee_role.employee, self.employee)
         self.assertEqual(self.employee_role.role, self.role)
+
+class CalendarIntegrationModelTest(TestCase):
+    def setUp(self):
+        self.employee = Employee.objects.create(name='Nora Brown')
+        self.calendar_integration = CalendarIntegration.objects.create(employee=self.employee, calendar_link='http://calendar.com/norabrown')
+
+    def test_calendar_integration_creation(self):
+        self.assertEqual(self.calendar_integration.employee, self.employee)
+        self.assertEqual(self.calendar_integration.calendar_link, 'http://calendar.com/norabrown')
+
+    def test_calendar_integration_foreign_key(self):
+        self.assertEqual(self.calendar_integration.employee, self.employee)
+
+    def test_calendar_link_blank(self):
+        with self.assertRaises(ValueError):
+            CalendarIntegration.objects.create(employee=self.employee, calendar_link='')
+
+class CalendarEventModelTest(TestCase):
+    def setUp(self):
+        self.employee = Employee.objects.create(name='Maya Grey')
+        self.calendar_event = CalendarEvent.objects.create(employee=self.employee, event_id='evt_123', start_time='2023-10-15 10:00:00', end_time='2023-10-15 12:00:00', title='Team Meeting')
+
+    def test_calendar_event_creation(self):
+        self.assertEqual(self.calendar_event.employee, self.employee)
+        self.assertEqual(self.calendar_event.event_id, 'evt_123')
+        self.assertEqual(self.calendar_event.title, 'Team Meeting')
+
+    def test_calendar_event_dates(self):
+        self.assertTrue(self.calendar_event.start_time < self.calendar_event.end_time)
+
+    def test_calendar_event_invalid_dates(self):
+        with self.assertRaises(ValueError):
+            CalendarEvent.objects.create(employee=self.employee, event_id='evt_123', start_time='2023-10-15 12:00:00', end_time='2023-10-15 10:00:00', title='Invalid Meeting')
+
+    def test_calendar_event_foreign_key(self):
+        self.assertEqual(self.calendar_event.employee, self.employee)

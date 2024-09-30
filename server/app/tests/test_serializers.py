@@ -211,3 +211,37 @@ class RoleUpdateSerializerTestCase(serializers.ModelSerializer):
         serializer = RoleUpdateSerializer(data=self.invalid_data)
         self.assertFalse(serializer.is_valid())
         self.assertIn('permissions', serializer.errors)
+
+class CalendarEventSerializerTestCase(serializers.ModelSerializer):
+    def setUp(self):
+        self.valid_data = {"id": "1", "summary": "Event Summary", "start": "2023-10-01T10:00:00Z", "end": "2023-10-01T11:00:00Z"}
+        self.invalid_data = {"id": "", "summary": "", "start": "invalid-date", "end": "invalid-date"}
+
+    def test_valid_calendar_event_serializer(self):
+        serializer = CalendarEventSerializer(data=self.valid_data)
+        self.assertTrue(serializer.is_valid())
+        self.assertEqual(serializer.validated_data, self.valid_data)
+
+    def test_invalid_calendar_event_serializer(self):
+        serializer = CalendarEventSerializer(data=self.invalid_data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('id', serializer.errors)
+        self.assertIn('summary', serializer.errors)
+        self.assertIn('start', serializer.errors)
+        self.assertIn('end', serializer.errors)
+
+class CalendarLinkSerializerTestCase(serializers.ModelSerializer):
+    def setUp(self):
+        self.valid_data = {"calendar_id": "123abc", "employee_id": 1}
+        self.invalid_data = {"calendar_id": "", "employee_id": "invalid"}
+
+    def test_valid_calendar_link_serializer(self):
+        serializer = CalendarLinkSerializer(data=self.valid_data)
+        self.assertTrue(serializer.is_valid())
+        self.assertEqual(serializer.validated_data, self.valid_data)
+
+    def test_invalid_calendar_link_serializer(self):
+        serializer = CalendarLinkSerializer(data=self.invalid_data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('calendar_id', serializer.errors)
+        self.assertIn('employee_id', serializer.errors)

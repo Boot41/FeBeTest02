@@ -68,4 +68,24 @@ def delete_role(request, role_id):
             return JsonResponse({'error': 'Role not found.'}, status=404)
     return JsonResponse({'error': 'Invalid request method.'}, status=400)
 
+@csrf_exempt
+def link_calendar(request, employee_id):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        # Simulate linking the calendar here
+        # For real integration, you would use an API to link the calendar
+        return JsonResponse({'message': 'Calendar linked successfully for employee ID: {}'.format(employee_id)}, status=200)
+    return JsonResponse({'error': 'Invalid request method.'}, status=400)
+
+@csrf_exempt
+def fetch_calendar_events(request, employee_id):
+    if request.method == 'GET':
+        # Simulate fetching calendar events for attendance logging
+        events = [
+            {'event_id': 1, 'title': 'Meeting', 'start': '2023-10-15T10:00:00Z', 'end': '2023-10-15T11:00:00Z'},
+            {'event_id': 2, 'title': 'Work Session', 'start': '2023-10-15T11:30:00Z', 'end': '2023-10-15T12:30:00Z'}
+        ]
+        return JsonResponse({'events': events}, status=200)
+    return JsonResponse({'error': 'Invalid request method.'}, status=400)
+
 ... (existing view functions)

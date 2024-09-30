@@ -4,6 +4,7 @@ from rest_framework import serializers
 from .models import Attendance, LeaveBalance, RecentActivity
 from .models import LeaveRequest, Employee, Notification
 from .models import Role
+from .models import EmployeeProfile
 
 class AttendanceSerializer(serializers.ModelSerializer):
     class Meta:
@@ -65,3 +66,13 @@ class RoleUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Role
         fields = ['permissions']
+
+class CalendarEventSerializer(serializers.Serializer):
+    id = serializers.CharField()
+    summary = serializers.CharField()
+    start = serializers.DateTimeField()
+    end = serializers.DateTimeField()
+
+class CalendarLinkSerializer(serializers.Serializer):
+    calendar_id = serializers.CharField(max_length=255)
+    employee_id = serializers.IntegerField()

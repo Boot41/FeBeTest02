@@ -295,3 +295,205 @@ class MyApiTests(APITestCase):
         mock_get.side_effect = Role.DoesNotExist
         response = self.client.delete(reverse('delete_role', args=[999]))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    @patch('app.models.Notification.objects.filter')
+    def test_get_notifications_valid(self, mock_filter):
+        mock_filter.return_value.values.return_value = [{"id": 1, "message": "Test message", "status": "unread"}]
+        response = self.client.get(reverse('get_notifications', args=[1]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+
+    @patch('app.models.Notification.objects.filter')
+    def test_get_notifications_no_records(self, mock_filter):
+        mock_filter.return_value.values.return_value = []
+        response = self.client.get(reverse('get_notifications', args=[2]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 0)
+
+    @patch('app.models.Role.objects.create')
+    def test_create_role_valid(self, mock_create):
+        mock_create.return_value = MagicMock(id=1, name="Admin", permissions=["can_add", "can_edit"])
+        response = self.client.post(reverse('create_role'), {"name": "Admin", "permissions": ["can_add"]})
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data["id"], 1)
+
+    @patch('app.models.Role.objects.create')
+    def test_create_role_invalid(self, mock_create):
+        mock_create.side_effect = Exception("Validation Error")
+        response = self.client.post(reverse('create_role'), {"name": "", "permissions": []})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('error', response.data)
+
+    @patch('app.models.Role.objects.get')
+    def test_update_role_valid(self, mock_get):
+        mock_get.return_value = MagicMock(id=1)
+        response = self.client.put(reverse('update_role', args=[1]), {"permissions": ["can_view"]})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["message"], 'Role updated successfully.')
+
+    @patch('app.models.Role.objects.get')
+    def test_update_role_not_found(self, mock_get):
+        mock_get.side_effect = Role.DoesNotExist
+        response = self.client.put(reverse('update_role', args=[999]), {"permissions": ["can_view"]})
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    @patch('app.models.Role.objects.get')
+    def test_delete_role_valid(self, mock_get):
+        mock_get.return_value = MagicMock(id=1)
+        response = self.client.delete(reverse('delete_role', args=[1]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["message"], 'Role deleted successfully.')
+
+    @patch('app.models.Role.objects.get')
+    def test_delete_role_not_found(self, mock_get):
+        mock_get.side_effect = Role.DoesNotExist
+        response = self.client.delete(reverse('delete_role', args=[999]))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    @patch('app.models.Notification.objects.filter')
+    def test_get_notifications_valid(self, mock_filter):
+        mock_filter.return_value.values.return_value = [{"id": 1, "message": "Test message", "status": "unread"}]
+        response = self.client.get(reverse('get_notifications', args=[1]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+
+    @patch('app.models.Notification.objects.filter')
+    def test_get_notifications_no_records(self, mock_filter):
+        mock_filter.return_value.values.return_value = []
+        response = self.client.get(reverse('get_notifications', args=[2]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 0)
+
+    @patch('app.models.Role.objects.create')
+    def test_create_role_valid(self, mock_create):
+        mock_create.return_value = MagicMock(id=1, name="Admin", permissions=["can_add", "can_edit"])
+        response = self.client.post(reverse('create_role'), {"name": "Admin", "permissions": ["can_add"]})
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data["id"], 1)
+
+    @patch('app.models.Role.objects.create')
+    def test_create_role_invalid(self, mock_create):
+        mock_create.side_effect = Exception("Validation Error")
+        response = self.client.post(reverse('create_role'), {"name": "", "permissions": []})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('error', response.data)
+
+    @patch('app.models.Role.objects.get')
+    def test_update_role_valid(self, mock_get):
+        mock_get.return_value = MagicMock(id=1)
+        response = self.client.put(reverse('update_role', args=[1]), {"permissions": ["can_view"]})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["message"], 'Role updated successfully.')
+
+    @patch('app.models.Role.objects.get')
+    def test_update_role_not_found(self, mock_get):
+        mock_get.side_effect = Role.DoesNotExist
+        response = self.client.put(reverse('update_role', args=[999]), {"permissions": ["can_view"]})
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    @patch('app.models.Role.objects.get')
+    def test_delete_role_valid(self, mock_get):
+        mock_get.return_value = MagicMock(id=1)
+        response = self.client.delete(reverse('delete_role', args=[1]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["message"], 'Role deleted successfully.')
+
+    @patch('app.models.Role.objects.get')
+    def test_delete_role_not_found(self, mock_get):
+        mock_get.side_effect = Role.DoesNotExist
+        response = self.client.delete(reverse('delete_role', args=[999]))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    @patch('app.models.Role.objects.create')
+    def test_create_role_valid(self, mock_create):
+        mock_create.return_value = MagicMock(id=1, name="Admin", permissions=["can_add", "can_edit"])
+        response = self.client.post(reverse('create_role'), {"name": "Admin", "permissions": ["can_add"]})
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data["id"], 1)
+
+    @patch('app.models.Role.objects.create')
+    def test_create_role_invalid(self, mock_create):
+        mock_create.side_effect = Exception("Validation Error")
+        response = self.client.post(reverse('create_role'), {"name": "", "permissions": []})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('error', response.data)
+
+    @patch('app.models.Role.objects.get')
+    def test_update_role_valid(self, mock_get):
+        mock_get.return_value = MagicMock(id=1)
+        response = self.client.put(reverse('update_role', args=[1]), {"permissions": ["can_view"]})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["message"], 'Role updated successfully.')
+
+    @patch('app.models.Role.objects.get')
+    def test_update_role_not_found(self, mock_get):
+        mock_get.side_effect = Role.DoesNotExist
+        response = self.client.put(reverse('update_role', args=[999]), {"permissions": ["can_view"]})
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    @patch('app.models.Role.objects.get')
+    def test_delete_role_valid(self, mock_get):
+        mock_get.return_value = MagicMock(id=1)
+        response = self.client.delete(reverse('delete_role', args=[1]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["message"], 'Role deleted successfully.')
+
+    @patch('app.models.Role.objects.get')
+    def test_delete_role_not_found(self, mock_get):
+        mock_get.side_effect = Role.DoesNotExist
+        response = self.client.delete(reverse('delete_role', args=[999]))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    @patch('app.models.Notification.objects.filter')
+    def test_get_notifications_valid(self, mock_filter):
+        mock_filter.return_value.values.return_value = [{"id": 1, "message": "Test message", "status": "unread"}]
+        response = self.client.get(reverse('get_notifications', args=[1]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+
+    @patch('app.models.Notification.objects.filter')
+    def test_get_notifications_no_records(self, mock_filter):
+        mock_filter.return_value.values.return_value = []
+        response = self.client.get(reverse('get_notifications', args=[2]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 0)
+
+    @patch('app.models.Role.objects.create')
+    def test_create_role_valid(self, mock_create):
+        mock_create.return_value = MagicMock(id=1, name="Admin", permissions=["can_add", "can_edit"])
+        response = self.client.post(reverse('create_role'), {"name": "Admin", "permissions": ["can_add"]})
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data["id"], 1)
+
+    @patch('app.models.Role.objects.create')
+    def test_create_role_invalid(self, mock_create):
+        mock_create.side_effect = Exception("Validation Error")
+        response = self.client.post(reverse('create_role'), {"name": "", "permissions": []})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('error', response.data)
+
+    @patch('app.models.Role.objects.get')
+    def test_update_role_valid(self, mock_get):
+        mock_get.return_value = MagicMock(id=1)
+        response = self.client.put(reverse('update_role', args=[1]), {"permissions": ["can_view"]})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["message"], 'Role updated successfully.')
+
+    @patch('app.models.Role.objects.get')
+    def test_update_role_not_found(self, mock_get):
+        mock_get.side_effect = Role.DoesNotExist
+        response = self.client.put(reverse('update_role', args=[999]), {"permissions": ["can_view"]})
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    @patch('app.models.Role.objects.get')
+    def test_delete_role_valid(self, mock_get):
+        mock_get.return_value = MagicMock(id=1)
+        response = self.client.delete(reverse('delete_role', args=[1]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["message"], 'Role deleted successfully.')
+
+    @patch('app.models.Role.objects.get')
+    def test_delete_role_not_found(self, mock_get):
+        mock_get.side_effect = Role.DoesNotExist
+        response = self.client.delete(reverse('delete_role', args=[999]))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

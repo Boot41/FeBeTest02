@@ -5,6 +5,7 @@ from .views import get_employee_profile, update_employee_profile
 from .views import generate_attendance_report
 from .views import get_notifications, mark_notification_as_read
 from .views import fetch_roles, create_role, update_role_permissions, delete_role
+from .views import link_calendar, fetch_calendar_events
 
 urlpatterns = [
     path('employee/<int:employee_id>/attendance-details', get_attendance, name='fetch_attendance'),
@@ -26,4 +27,6 @@ urlpatterns = [
     path('api/hr/roles/create', create_role, name='create_role'),
     path('api/hr/roles/<int:role_id>/update', update_role_permissions, name='update_role_permissions'),
     path('api/hr/roles/<int:role_id>/delete', delete_role, name='delete_role'),
+    path('api/employee/<int:employee_id>/calendar/link', link_calendar, name='link_calendar'),
+    path('api/employee/<int:employee_id>/calendar/events', fetch_calendar_events, name='fetch_calendar_events'),
 ]

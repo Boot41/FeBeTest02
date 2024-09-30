@@ -15,3 +15,4 @@ rest_framework
 
 # Added for role management APIs
 
+# Added for calendar integration and attendance logging
