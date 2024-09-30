@@ -1,5 +1,5 @@
 from django.test import TestCase
-from .models import Employee, Attendance, LeaveBalance, RecentActivity
+from .models import Employee, Attendance, LeaveBalance, RecentActivity, LeaveRequest
 
 class EmployeeModelTest(TestCase):
     def setUp(self):
@@ -44,3 +44,25 @@ class RecentActivityModelTest(TestCase):
 
     def test_recent_activity_foreign_key(self):
         self.assertEqual(self.activity.employee, self.employee)
+
+class LeaveRequestModelTest(TestCase):
+    def setUp(self):
+        self.employee = Employee.objects.create(name='Jane Smith')
+        self.leave_request = LeaveRequest.objects.create(employee=self.employee, leave_type='Vacation', start_date='2023-10-05', end_date='2023-10-10')
+
+    def test_leave_request_creation(self):
+        self.assertEqual(self.leave_request.leave_type, 'Vacation')
+        self.assertEqual(self.leave_request.status, 'pending')
+        self.assertEqual(self.leave_request.start_date, '2023-10-05')
+        self.assertEqual(self.leave_request.end_date, '2023-10-10')
+
+    def test_leave_request_foreign_key(self):
+        self.assertEqual(self.leave_request.employee, self.employee)
+
+    def test_leave_request_invalid_dates(self):
+        with self.assertRaises(ValueError):
+            LeaveRequest.objects.create(employee=self.employee, leave_type='Vacation', start_date='2023-10-10', end_date='2023-10-05')
+
+    def test_leave_request_no_employee(self):
+        with self.assertRaises(ValueError):
+            LeaveRequest.objects.create(employee=None, leave_type='Vacation', start_date='2023-10-05', end_date='2023-10-10')

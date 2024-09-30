@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 
 from rest_framework import serializers
-from .models import Attendance, LeaveBalance, RecentActivities
+from .models import Attendance, LeaveBalance, RecentActivity
 
 class AttendanceSerializer(serializers.ModelSerializer):
     class Meta:
@@ -15,7 +15,7 @@ class LeaveBalanceSerializer(serializers.ModelSerializer):
         model = LeaveBalance
         fields = '__all__'
 
-class RecentActivitiesSerializer(serializers.ModelSerializer):
+class RecentActivitySerializer(serializers.ModelSerializer):
     class Meta:
-        model = RecentActivities
+        model = RecentActivity
         fields = '__all__'
