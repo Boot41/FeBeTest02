@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import get_attendance, get_leave_balance, get_recent_activities, request_leave
+from .views import get_organization_directory, get_organization_structure
 
 urlpatterns = [
     path('employee/<int:employee_id>/attendance-details', get_attendance, name='fetch_attendance'),
@@ -10,4 +11,6 @@ urlpatterns = [
     path('manager/<int:manager_id>/team-leave-requests', get_team_leave_requests, name='fetch_team_leave_requests'),
     path('manager/<int:manager_id>/leave-requests/<int:request_id>/approve', approve_leave_request, name='approve_leave_request'),
     path('manager/<int:manager_id>/leave-requests/<int:request_id>/deny', deny_leave_request, name='deny_leave_request'),
+    path('api/organization/directory', get_organization_directory, name='fetch_organization_directory'),
+    path('api/organization/structure', get_organization_structure, name='fetch_organization_structure'),
 ]

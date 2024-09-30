@@ -124,3 +124,16 @@ class MyApiTests(APITestCase):
     def test_deny_leave_request_invalid_method(self):
         response = self.client.get(reverse('deny_leave_request', args=[1, 1]))
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    @patch('app.models.Employee.objects.values')
+    def test_get_organization_directory(self, mock_values):
+        mock_values.return_value = [{"employee_id": 1, "name": "John Doe"}]
+        response = self.client.get(reverse('get_organization_directory'))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+
+    @patch('app.models.Employee.objects.values')
+    def test_get_organization_structure(self, mock_values):
+        response = self.client.get(reverse('get_organization_structure'))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIsInstance(response.data, list)

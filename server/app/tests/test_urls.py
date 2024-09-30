@@ -146,3 +146,29 @@ class LeaveRequestDenialAPITests(APITestCase):
         url = reverse('deny_leave_request', args=['invalid', 1])
         response = self.client.post(url)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+class OrganizationDirectoryAPITests(APITestCase):
+    def test_get_organization_directory_success(self):
+        url = reverse('get_organization_directory')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_get_organization_directory_failure(self):
+        url = reverse('get_organization_directory')
+        with patch('app.views.get_organization_directory') as mock:
+            mock.side_effect = Exception('Database error')
+            response = self.client.get(url)
+            self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class OrganizationStructureAPITests(APITestCase):
+    def test_get_organization_structure_success(self):
+        url = reverse('get_organization_structure')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_get_organization_structure_failure(self):
+        url = reverse('get_organization_structure')
+        with patch('app.views.get_organization_structure') as mock:
+            mock.side_effect = Exception('Database error')
+            response = self.client.get(url)
+            self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)

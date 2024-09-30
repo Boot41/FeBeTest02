@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from .models import Attendance, LeaveBalance, RecentActivity
+from .models import Attendance, LeaveBalance, RecentActivity, Employee
 
 # Create your views here.
 
@@ -45,3 +45,14 @@ def deny_leave_request(request, manager_id, request_id):
         # Logic to deny leave request goes here, e.g., updating the database
         return JsonResponse({'message': 'Leave request denied.'}, status=200)
     return JsonResponse({'error': 'Invalid request method.'}, status=400)
+
+
+def get_organization_directory(request):
+    employees = Employee.objects.all().values('employee_id', 'name')  # Add additional fields as needed
+    return JsonResponse(list(employees), safe=False)
+
+
+def get_organization_structure(request):
+    # Logic to fetch organization structure, e.g., using Employee model's manager relationship
+    # An example placeholder for hierarchical data
+    return JsonResponse({'structure': 'Sample structure data'}, safe=False)

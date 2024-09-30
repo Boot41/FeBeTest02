@@ -27,3 +27,14 @@ class LeaveRequest(models.Model):
     end_date = models.DateField()
     status = models.CharField(max_length=10, default='pending')
     reason = models.CharField(max_length=255)
+
+class Organization(models.Model):
+    name = models.CharField(max_length=255)
+
+class EmployeeDirectory(models.Model):
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
+
+class HierarchicalStructure(models.Model):
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='subordinates')
+    manager = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='superiors')

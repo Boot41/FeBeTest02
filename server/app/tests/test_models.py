@@ -1,5 +1,5 @@
 from django.test import TestCase
-from .models import Employee, Attendance, LeaveBalance, RecentActivity, LeaveRequest
+from .models import Employee, Attendance, LeaveBalance, RecentActivity, LeaveRequest, Organization, EmployeeDirectory, HierarchicalStructure
 
 class EmployeeModelTest(TestCase):
     def setUp(self):
@@ -80,3 +80,30 @@ class LeaveRequestModelTest(TestCase):
         self.leave_request.status = 'approved'
         self.leave_request.save()
         self.assertEqual(self.leave_request.status, 'approved')
+
+class OrganizationModelTest(TestCase):
+    def setUp(self):
+        self.organization = Organization.objects.create(name='Tech Corp')
+
+    def test_organization_creation(self):
+        self.assertEqual(self.organization.name, 'Tech Corp')
+
+class EmployeeDirectoryModelTest(TestCase):
+    def setUp(self):
+        self.organization = Organization.objects.create(name='Tech Corp')
+        self.employee = Employee.objects.create(name='John Doe')
+        self.employee_directory = EmployeeDirectory.objects.create(employee=self.employee, organization=self.organization)
+
+    def test_employee_directory_creation(self):
+        self.assertEqual(self.employee_directory.employee, self.employee)
+        self.assertEqual(self.employee_directory.organization, self.organization)
+
+class HierarchicalStructureModelTest(TestCase):
+    def setUp(self):
+        self.manager = Employee.objects.create(name='Manager Doe')
+        self.subordinate = Employee.objects.create(name='Subordinate Doe')
+        self.hierarchy = HierarchicalStructure.objects.create(employee=self.subordinate, manager=self.manager)
+
+    def test_hierarchical_structure_creation(self):
+        self.assertEqual(self.hierarchy.employee, self.subordinate)
+        self.assertEqual(self.hierarchy.manager, self.manager)

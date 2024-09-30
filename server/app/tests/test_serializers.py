@@ -94,3 +94,20 @@ class AttendanceDetailSerializerTestCase(serializers.ModelSerializer):
         self.assertFalse(serializer.is_valid())
         self.assertIn('date', serializer.errors)
         self.assertIn('status', serializer.errors)
+
+class EmployeeSerializerTestCase(serializers.ModelSerializer):
+    def setUp(self):
+        self.valid_data = {"first_name": "John", "last_name": "Doe", "email": "john.doe@example.com"}
+        self.invalid_data = {"first_name": "", "last_name": "", "email": "invalid-email"}
+
+    def test_valid_employee_serializer(self):
+        serializer = EmployeeSerializer(data=self.valid_data)
+        self.assertTrue(serializer.is_valid())
+        self.assertEqual(serializer.validated_data, self.valid_data)
+
+    def test_invalid_employee_serializer(self):
+        serializer = EmployeeSerializer(data=self.invalid_data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('first_name', serializer.errors)
+        self.assertIn('last_name', serializer.errors)
+        self.assertIn('email', serializer.errors)
