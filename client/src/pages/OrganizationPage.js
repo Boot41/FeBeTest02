@@ -20,18 +20,19 @@ const OrganizationPage = () => {
         }
     };
 
+    // Fetch employees on component mount
     useEffect(() => {
         fetchEmployees(); // Fetching employee data on component mount
     }, []); // Empty dependency array to run only on mount
 
     return (
-        <main className="p-6"> {/* Providing padding for the main content */}
+        <main className="flex flex-col p-6 space-y-4"> {/* Main content area with padding and spacing */}
             {error && <p className="text-red-500">{error}</p>} {/* Displaying error message if there is an error */}
-            <h1 className="text-3xl font-bold mb-4">Organization Overview</h1> {/* Main title */}
+            <h1 className="text-3xl font-bold">Organization Overview</h1> {/* Main title */}
             <OrganizationDirectory employees={employees} /> {/* Rendering OrganizationDirectory component and passing employee data */}
             <OrgStructure /> {/* Rendering OrgStructure component */}
         </main>
     );
 };
 
-export default OrganizationPage; // Exporting OrganizationPage component
+export default OrganizationPage; // Exporting OrganizationPage component.
