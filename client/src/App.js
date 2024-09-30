@@ -4,6 +4,7 @@ import DashboardPage from './pages/DashboardPage';
 import MePage from './pages/MePage'; 
 import MyTeamPage from './pages/MyTeamPage'; 
 import OrganizationPage from './pages/OrganizationPage'; 
+import ProfilePage from './pages/ProfilePage';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import './App.css';
@@ -19,6 +20,7 @@ function AppWrapper() {
         <Route path="/me" element={<MePage />} />
         <Route path="/myteam" element={<MyTeamPage />} />
         <Route path="/organization" element={<OrganizationPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
       </Routes>
       <Footer />
     </Router>
